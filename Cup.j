@@ -62,6 +62,7 @@ var widgetId = @"Cup_input",
 
 var CupDefaultProgressInterval = 100;
 
+    delegateURL = 1 << 24;
 /*!
     @class Cup
 
@@ -369,8 +370,11 @@ var CupDefaultProgressInterval = 100;
     if ([delegate respondsToSelector:@selector(cup:willSubmitFile:)])
         delegateImplementsFlags |= delegateSubmit;
 
-    if ([delegate respondsToSelector:@selector(cup:willSendFile:)])
-        delegateImplementsFlags |= delegateSend;
+	if ([delegate respondsToSelector:@selector(cup:willUseURLForFile:)])
+	    delegateImplementsFlags |= delegateURL;
+
+	if ([delegate respondsToSelector:@selector(cup:willSendFile:)])
+		delegateImplementsFlags |= delegateSend;
 
     if ([delegate respondsToSelector:@selector(cup:chunkWillSendForFile:)])
         delegateImplementsFlags |= delegateChunkWillSend;
@@ -693,6 +697,16 @@ var CupDefaultProgressInterval = 100;
     return canSubmit;
 }
 
+- (CPString)willUseURLForFile:(CupFile)file data:(JSObject)jsObject
+{
+	var anUrl = jsObject.url;
+	
+	if (delegateImplementsFlags & delegateURL)
+        anUrl = [delegate cup:self willUseURLForFile:file];
+        
+	return anUrl;
+}
+
 - (BOOL)willSendFile:(CupFile)file
 {
     var canSend = YES;
@@ -926,7 +940,12 @@ var CupDefaultProgressInterval = 100;
             {
                 currentEvent = e;
                 currentData = data;
-
+				
+				var fileURL = [self willUseURLForFile:[self fileFromJSFile:data.files[0]] data:data];
+				
+				if (fileURL) 
+					data.url = fileURL;
+				
                 var canSend = [self willSendFile:[self fileFromJSFile:data.files[0]]];
 
                 [self pumpRunLoop];
