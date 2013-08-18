@@ -24,6 +24,9 @@ CupFileStatusPending   = 0;
 CupFileStatusUploading = 1;
 CupFileStatusComplete  = 2;
 
+CupUploadMethodPOST = @"POST";
+CupUploadMethodPUT = @"PUT";
+
 /*
     These constants are bit flags passed to the cup:didFilterFile:because:
     delegate method, indicating why the file was rejected.
@@ -59,10 +62,12 @@ var widgetId = @"Cup_input",
     delegateStartQueue = 1 << 21,
     delegateClearQueue = 1 << 22,
     delegateStopQueue = 1 << 23;
-
-var CupDefaultProgressInterval = 100;
-
     delegateURL = 1 << 24;
+
+var CupDefaultProgressInterval = 100,
+	CupDefaultUploadMethod = CupUploadMethodPOST,
+	CupDefaultIsMultipart = true;
+ 
 /*!
     @class Cup
 
@@ -214,13 +219,15 @@ var CupDefaultProgressInterval = 100;
     // jQuery File Upload options
     JSObject            fileUploadOptions;
     CPString            URL @accessors;
-    CPString            redirectURL @accessors;
+    CPString            redirectURL @accessors; // ????
     BOOL                sequential @accessors;
     int                 maxChunkSize @accessors;
     int                 maxConcurrentUploads @accessors;
     int                 progressInterval @accessors;
     @outlet CPView      dropTarget @accessors(readonly);
     JSObject            jQueryDropTarget;
+    CPString            uploadMethod @accessors;
+    BOOL                multipart @accessors(getter=isMultipart);
 
     CPString            filenameFilter @accessors;
     RegExp              filenameFilterRegex @accessors;
@@ -316,6 +323,8 @@ var CupDefaultProgressInterval = 100;
     [self setMaxChunkSize:options["maxChunkSize"] || 0];
     [self setMaxConcurrentUploads:options["limitConcurrentUploads"] || 0];
     [self setProgressInterval:options["progressInterval"] || CupDefaultProgressInterval];
+	[self setUploadMethod:options["type"] || CupDefaultUploadMethod];
+	[self setIsMultipart:options["multipart"] || CupDefaultIsMultipart];
 }
 
 /*!
@@ -871,7 +880,9 @@ var CupDefaultProgressInterval = 100;
     sequential = NO;
     maxConcurrentUploads = 0;
     maxChunkSize = 0;
+	uploadMethod = CupDefaultUploadMethod;
     progressInterval = CupDefaultProgressInterval;
+	multipart = CupDefaultUploadMethod;
     progress = [CPMutableDictionary dictionary];
     dropTarget = [CPPlatformWindow primaryPlatformWindow];
     jQueryDropTarget = jQuery(document);
@@ -1155,6 +1166,8 @@ var CupDefaultProgressInterval = 100;
     fileUploadOptions["limitConcurrentUploads"] = maxConcurrentUploads;
     fileUploadOptions["progressInterval"] = progressInterval;
     fileUploadOptions["dropZone"] = jQueryDropTarget;
+    fileUploadOptions["type"] = uploadMethod;
+    fileUploadOptions["multipart"] = multipart;
 
     [self setCallbacks:fileUploadOptions];
 
