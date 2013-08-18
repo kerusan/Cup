@@ -65,8 +65,8 @@ var widgetId = @"Cup_input",
     delegateURL = 1 << 24;
 
 var CupDefaultProgressInterval = 100,
-	CupDefaultUploadMethod = CupUploadMethodPOST,
-	CupDefaultIsMultipart = true;
+    CupDefaultUploadMethod = CupUploadMethodPOST,
+    CupDefaultMultipart = true;
  
 /*!
     @class Cup
@@ -323,8 +323,8 @@ var CupDefaultProgressInterval = 100,
     [self setMaxChunkSize:options["maxChunkSize"] || 0];
     [self setMaxConcurrentUploads:options["limitConcurrentUploads"] || 0];
     [self setProgressInterval:options["progressInterval"] || CupDefaultProgressInterval];
-	[self setUploadMethod:options["type"] || CupDefaultUploadMethod];
-	[self setIsMultipart:options["multipart"] || CupDefaultIsMultipart];
+    [self setUploadMethod:options["type"] || CupDefaultUploadMethod];
+    [self setIsMultipart:options["multipart"] || CupDefaultMultipart];
 }
 
 /*!
@@ -379,11 +379,11 @@ var CupDefaultProgressInterval = 100,
     if ([delegate respondsToSelector:@selector(cup:willSubmitFile:)])
         delegateImplementsFlags |= delegateSubmit;
 
-	if ([delegate respondsToSelector:@selector(cup:willUseURLForFile:)])
-	    delegateImplementsFlags |= delegateURL;
+    if ([delegate respondsToSelector:@selector(cup:willUseURLForFile:)])
+        delegateImplementsFlags |= delegateURL;
 
-	if ([delegate respondsToSelector:@selector(cup:willSendFile:)])
-		delegateImplementsFlags |= delegateSend;
+    if ([delegate respondsToSelector:@selector(cup:willSendFile:)])
+        delegateImplementsFlags |= delegateSend;
 
     if ([delegate respondsToSelector:@selector(cup:chunkWillSendForFile:)])
         delegateImplementsFlags |= delegateChunkWillSend;
@@ -708,12 +708,12 @@ var CupDefaultProgressInterval = 100,
 
 - (CPString)willUseURLForFile:(CupFile)file data:(JSObject)jsObject
 {
-	var anUrl = jsObject.url;
+    var anUrl = jsObject.url;
 	
-	if (delegateImplementsFlags & delegateURL)
+    if (delegateImplementsFlags & delegateURL)
         anUrl = [delegate cup:self willUseURLForFile:file];
         
-	return anUrl;
+    return anUrl;
 }
 
 - (BOOL)willSendFile:(CupFile)file
@@ -880,9 +880,9 @@ var CupDefaultProgressInterval = 100,
     sequential = NO;
     maxConcurrentUploads = 0;
     maxChunkSize = 0;
-	uploadMethod = CupDefaultUploadMethod;
+    uploadMethod = CupDefaultUploadMethod;
     progressInterval = CupDefaultProgressInterval;
-	multipart = CupDefaultUploadMethod;
+    multipart = CupDefaultUploadMethod;
     progress = [CPMutableDictionary dictionary];
     dropTarget = [CPPlatformWindow primaryPlatformWindow];
     jQueryDropTarget = jQuery(document);
@@ -952,10 +952,10 @@ var CupDefaultProgressInterval = 100,
                 currentEvent = e;
                 currentData = data;
 				
-				var fileURL = [self willUseURLForFile:[self fileFromJSFile:data.files[0]] data:data];
+                var fileURL = [self willUseURLForFile:[self fileFromJSFile:data.files[0]] data:data];
 				
-				if (fileURL) 
-					data.url = fileURL;
+                if (fileURL) 
+                    data.url = fileURL;
 				
                 var canSend = [self willSendFile:[self fileFromJSFile:data.files[0]]];
 
