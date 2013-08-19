@@ -5,3 +5,5 @@
 For information on installation and usage, please see the [wiki](https://github.com/aparajita/Cup/wiki).
 
 This fork is not intended to replace Aparajitas equally fantastic ObjectiveJ Cappuccino uploader framework [Cup](https://github.com/aparajita/Cup). It is here only to provide a sandbox for testing new features that may or may not be included in the original repos.
+
+This site: http://kerusan.github.io/Cup
