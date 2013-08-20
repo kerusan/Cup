@@ -61,7 +61,7 @@ var widgetId = @"Cup_input",
     delegateChunkComplete = 1 << 20,
     delegateStartQueue = 1 << 21,
     delegateClearQueue = 1 << 22,
-    delegateStopQueue = 1 << 23;
+    delegateStopQueue = 1 << 23,
     delegateURL = 1 << 24;
 
 var CupDefaultProgressInterval = 100,
