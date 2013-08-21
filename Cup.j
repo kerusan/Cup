@@ -227,7 +227,7 @@ var CupDefaultProgressInterval = 100,
     @outlet CPView      dropTarget @accessors(readonly);
     JSObject            jQueryDropTarget;
     CPString            uploadMethod @accessors;
-    BOOL                multipart @accessors(getter=isMultipart);
+    BOOL                multipart @accessors;
 
     CPString            filenameFilter @accessors;
     RegExp              filenameFilterRegex @accessors;
@@ -324,7 +324,7 @@ var CupDefaultProgressInterval = 100,
     [self setMaxConcurrentUploads:options["limitConcurrentUploads"] || 0];
     [self setProgressInterval:options["progressInterval"] || CupDefaultProgressInterval];
     [self setUploadMethod:options["type"] || CupDefaultUploadMethod];
-    [self setIsMultipart:options["multipart"] || CupDefaultMultipart];
+    [self setMultipart:options["multipart"] || CupDefaultMultipart];
 }
 
 /*!
