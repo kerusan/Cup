@@ -62,10 +62,8 @@ var delegateFilter = 1 << 0,
     delegateClearQueue = 1 << 22,
     delegateStopQueue = 1 << 23;
 
-var CupDefaultProgressInterval = 100,
-    CupDefaultUploadMethod = CupUploadMethodPOST,
-    CupDefaultMultipart = true;
- 
+var CupDefaultProgressInterval = 100;
+
 /*!
     @class Cup
 
@@ -323,8 +321,8 @@ var CupDefaultProgressInterval = 100,
     [self setMaxChunkSize:options["maxChunkSize"] || 0];
     [self setMaxConcurrentUploads:options["limitConcurrentUploads"] || 0];
     [self setProgressInterval:options["progressInterval"] || CupDefaultProgressInterval];
-    [self setUploadMethod:options["type"] || CupDefaultUploadMethod];
-    [self setMultipart:options["multipart"] || CupDefaultMultipart];
+    [self setUploadMethod:options["type"] || CupUploadMethodPOST];
+    [self setMultipart:options["multipart"] || YES];
 }
 
 /*!
@@ -877,9 +875,9 @@ var CupDefaultProgressInterval = 100,
     sequential = NO;
     maxConcurrentUploads = 0;
     maxChunkSize = 0;
-    uploadMethod = CupDefaultUploadMethod;
     progressInterval = CupDefaultProgressInterval;
-    multipart = CupDefaultUploadMethod;
+    uploadMethod = CupUploadMethodPOST;
+    multipart = YES;
     progress = [CPMutableDictionary dictionary];
     dropTarget = [CPPlatformWindow primaryPlatformWindow];
     jQueryDropTarget = jQuery(document);
