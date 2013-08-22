@@ -60,8 +60,7 @@ var delegateFilter = 1 << 0,
     delegateChunkComplete = 1 << 20,
     delegateStartQueue = 1 << 21,
     delegateClearQueue = 1 << 22,
-    delegateStopQueue = 1 << 23,
-    delegateURL = 1 << 24;
+    delegateStopQueue = 1 << 23;
 
 var CupDefaultProgressInterval = 100,
     CupDefaultUploadMethod = CupUploadMethodPOST,
@@ -379,9 +378,6 @@ var CupDefaultProgressInterval = 100,
 
     if ([delegate respondsToSelector:@selector(cup:willSubmitFile:)])
         delegateImplementsFlags |= delegateSubmit;
-
-    if ([delegate respondsToSelector:@selector(cup:willUseURLForFile:)])
-        delegateImplementsFlags |= delegateURL;
 
     if ([delegate respondsToSelector:@selector(cup:willSendFile:)])
         delegateImplementsFlags |= delegateSend;
@@ -714,16 +710,6 @@ var CupDefaultProgressInterval = 100,
         canSubmit = [delegate cup:self willSubmitFile:file];
 
     return canSubmit;
-}
-
-- (CPString)willUseURLForFile:(CupFile)file data:(JSObject)jsObject
-{
-    var anUrl = jsObject.url;
-	
-    if (delegateImplementsFlags & delegateURL)
-        anUrl = [delegate cup:self willUseURLForFile:file];
-        
-    return anUrl;
 }
 
 - (BOOL)willSendFile:(CupFile)file
@@ -1270,6 +1256,8 @@ var CupDefaultProgressInterval = 100,
     This class exposes the following KVO compliant read-only properties:
 
     name            The filename of the file
+    URL             A string representing the URL to which this file will be uploaded.
+                    jQuery File Upload option: url.
     size            The file's size in bytes
     type            The file's mime type
     status          One of the CupStatus constants above
@@ -1286,6 +1274,7 @@ var CupDefaultProgressInterval = 100,
 {
     Cup             cup;
     CPString        name @accessors(readonly);
+    CPString        URL @accessors;
     int             size @accessors(readonly);
     CPString        type @accessors(readonly);
     int             status @accessors;

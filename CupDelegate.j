@@ -74,15 +74,6 @@
 }
 
 /*!
-    A submitted file is about to begin uploading. To do a last minute change on the url return,
-    another url instead of the default URL. If nil is returnd the default URL is used.
-*/
-- (CPString)cup:(Cup)cup willUseURLForFile:(CupFile)file
-{
-    return nil;
-}
-
-/*!
     A submitted file is about to begin uploading. To abort the upload, return NO, otherwise
     return YES.
 */
