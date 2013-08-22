@@ -37,8 +37,7 @@ CupFilteredSize = 1 << 1;
 
 var FileStatuses = [];
 
-var widgetId = @"Cup_input",
-    delegateFilter = 1 << 0,
+var delegateFilter = 1 << 0,
     delegateWillAdd = 1 << 1,
     delegateAdd = 1 << 2,
     delegateSubmit = 1 << 3,
@@ -228,6 +227,8 @@ var CupDefaultProgressInterval = 100,
     JSObject            jQueryDropTarget;
     CPString            uploadMethod @accessors;
     BOOL                multipart @accessors;
+
+    CPString            widgetId;
 
     CPString            filenameFilter @accessors;
     RegExp              filenameFilterRegex @accessors;
@@ -875,6 +876,7 @@ var CupDefaultProgressInterval = 100,
 
 - (void)_init
 {
+    widgetId = @"Cup_input" + [self UID];
     [self makeFileInput];
 
     fileUploadOptions = {};
