@@ -574,7 +574,6 @@ var CupDefaultProgressInterval = 100;
 */
 - (@action)addFiles:(id)sender
 {
-    [self fileUpload:@"option", [self makeOptions]];
     jQuery("#" + widgetId)[0].click();
 }
 
