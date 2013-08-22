@@ -26,6 +26,7 @@ CupFileStatusComplete  = 2;
 
 CupUploadMethodPOST = @"POST";
 CupUploadMethodPUT = @"PUT";
+CupUploadMethodPATCH = @"PATCH";
 
 /*
     These constants are bit flags passed to the cup:didFilterFile:because:
@@ -535,6 +536,14 @@ var CupDefaultProgressInterval = 100,
 /*!
     Returns the array controller for the queue, instantiating it (and the queue) if necessary
     and setting its content to the queue array.
+- (void)setUploadMethod:(CPString)aMethodType
+{
+    if (aMethodType === CupUploadMethodPOST || aMethodType === CupUploadMethodPUT || aMethodType === CupUploadMethodPATCH)
+    {
+        uploadMethod = aMethodType;
+    }
+}
+
 */
 - (CPArrayController)queueController
 {
