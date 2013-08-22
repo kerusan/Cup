@@ -246,6 +246,8 @@ var CupDefaultProgressInterval = 100;
     jQueryEvent         currentEvent @accessors(readonly);
     JSObject            currentData @accessors(readonly);
 
+    JSObject            callbacks;
+
     BOOL                uploading @accessors;
     BOOL                indeterminate @accessors;
     CPMutableDictionary progress @accessors;
@@ -927,184 +929,191 @@ var CupDefaultProgressInterval = 100;
 }
 
 - (void)setCallbacks:(JSObject)options
-{	
-    var callbacks =
+{
+    if (!callbacks)
+    {
+        callbacks =
         {
-        add: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self addFile:data.files[0]];
-            [self pumpRunLoop];
-        },
+            add: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self addFile:data.files[0]];
+                [self pumpRunLoop];
+            },
 
-        submit: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
+            submit: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
 
-            var canSubmit = [self submitFile:[self fileFromJSFile:data.files[0]]];
+                var canSubmit = [self submitFile:[self fileFromJSFile:data.files[0]]];
 
-            [self pumpRunLoop];
-            return canSubmit;
-        },
+                [self pumpRunLoop];
+                return canSubmit;
+            },
 
-        send: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-				
-			var fileURL = [self willUseURLForFile:[self fileFromJSFile:data.files[0]] data:data];
-				
-			if (fileURL) 
-				data.url = fileURL;
-				
-            var canSend = [self willSendFile:[self fileFromJSFile:data.files[0]]];
+            send: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
 
-            [self pumpRunLoop];
-            return canSend;
-        },
+                var cupFile = [self fileFromJSFile:data.files[0]],
+                    canSend = [self willSendFile:cupFile],
+                    uploadURL = [cupFile URL];
 
-        done: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self uploadDidSucceedForFile:[self fileFromJSFile:data.files[0]]];
-            [self pumpRunLoop];
-        },
+                if (canSend && uploadURL)
+                    data.url = uploadURL;
+                else
+                    data.url = [self URL];
 
-        fail: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self uploadDidFailForFile:[self fileFromJSFile:data.files[0]]];
-            [self pumpRunLoop];
-        },
+                [self pumpRunLoop];
+                return canSend;
+            },
 
-        always: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self uploadDidCompleteForFile:[self fileFromJSFile:data.files[0]]];
-            [self pumpRunLoop];
-        },
+            done: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self uploadDidSucceedForFile:[self fileFromJSFile:data.files[0]]];
+                [self pumpRunLoop];
+            },
 
-        progress: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
+            fail: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self uploadDidFailForFile:[self fileFromJSFile:data.files[0]]];
+                [self pumpRunLoop];
+            },
 
-            var fileProgress = {
-                uploadedBytes:  data.loaded,
-                total:          data.total,
-                bitrate:        data.bitrate
-            };
+            always: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self uploadDidCompleteForFile:[self fileFromJSFile:data.files[0]]];
+                [self pumpRunLoop];
+            },
 
-            [self uploadForFile:[self fileFromJSFile:data.files[0]] didProgress:fileProgress];
-            [self pumpRunLoop];
-        },
+            progress: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
 
-        progressall: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
+                var fileProgress =
+                {
+                    uploadedBytes:  data.loaded,
+                    total:          data.total,
+                    bitrate:        data.bitrate
+                };
 
-            var overallProgress = {
-                uploadedBytes:  data.loaded,
-                total:          data.total,
-                bitrate:        data.bitrate
-            };
+                [self uploadForFile:[self fileFromJSFile:data.files[0]] didProgress:fileProgress];
+                [self pumpRunLoop];
+            },
 
-            [self uploadsDidProgress:overallProgress];
-            [self pumpRunLoop];
-        },
+            progressall: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
 
-        start: function(e)
-        {
-            currentEvent = e;
-            currentData = nil;
-            [self uploadDidStart];
-            [self pumpRunLoop];
-        },
+                var overallProgress =
+                {
+                    uploadedBytes:  data.loaded,
+                    total:          data.total,
+                    bitrate:        data.bitrate
+                };
 
-        stop: function(e)
-        {
-            currentEvent = e;
-            currentData = nil;
-            [self uploadDidStop];
-            [self pumpRunLoop];
-        },
+                [self uploadsDidProgress:overallProgress];
+                [self pumpRunLoop];
+            },
 
-        change: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self fileInputDidSelectFiles:data.files];
-            [self pumpRunLoop];
-        },
+            start: function(e)
+            {
+                currentEvent = e;
+                currentData = nil;
+                [self uploadDidStart];
+                [self pumpRunLoop];
+            },
 
-        paste: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self filesWerePasted:data.files];
-            [self pumpRunLoop];
-        },
+            stop: function(e)
+            {
+                currentEvent = e;
+                currentData = nil;
+                [self uploadDidStop];
+                [self pumpRunLoop];
+            },
 
-        drop: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self filesWereDropped:data.files];
-            [self pumpRunLoop];
-        },
+            change: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self fileInputDidSelectFiles:data.files];
+                [self pumpRunLoop];
+            },
 
-        dragover: function(e)
-        {
-            currentEvent = e;
-            currentData = nil;
-            [self filesWereDraggedOverWithEvent:e];
-            [self pumpRunLoop];
-        },
+            paste: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self filesWerePasted:data.files];
+                [self pumpRunLoop];
+            },
 
-        chunksend: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
+            drop: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self filesWereDropped:data.files];
+                [self pumpRunLoop];
+            },
 
-            var canSend = [self chunkWillSendForFile:[self fileFromJSFile:data.files[0]]];
-            [self pumpRunLoop];
-            return canSend;
-        },
+            dragover: function(e)
+            {
+                currentEvent = e;
+                currentData = nil;
+                [self filesWereDraggedOverWithEvent:e];
+                [self pumpRunLoop];
+            },
 
-        chunkdone: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self chunkDidSucceedForFile:[self fileFromJSFile:data.files[0]]];
-            [self pumpRunLoop];
-        },
+            chunksend: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
 
-        chunkfail: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self chunkDidFailForFile:[self fileFromJSFile:data.files[0]]];
-            [self pumpRunLoop];
-        },
+                var canSend = [self chunkWillSendForFile:[self fileFromJSFile:data.files[0]]];
+                [self pumpRunLoop];
+                return canSend;
+            },
 
-        chunkalways: function(e, data)
-        {
-            currentEvent = e;
-            currentData = data;
-            [self chunkDidCompleteForFile:[self fileFromJSFile:data.files[0]]];
-            [self pumpRunLoop];
-        }
-    };
+            chunkdone: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self chunkDidSucceedForFile:[self fileFromJSFile:data.files[0]]];
+                [self pumpRunLoop];
+            },
 
-    for (var key in callbacks)
+            chunkfail: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self chunkDidFailForFile:[self fileFromJSFile:data.files[0]]];
+                [self pumpRunLoop];
+            },
+
+            chunkalways: function(e, data)
+            {
+                currentEvent = e;
+                currentData = data;
+                [self chunkDidCompleteForFile:[self fileFromJSFile:data.files[0]]];
+                [self pumpRunLoop];
+            }
+        };
+
+        for (var key in callbacks)
         if (callbacks.hasOwnProperty(key))
             options[key] = callbacks[key];
+    }
 }
 
 - (void)_setFilenameFilter:(CPString)aFilter caseSensitive:(BOOL)caseSensitive
