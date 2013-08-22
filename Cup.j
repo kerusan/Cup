@@ -147,6 +147,15 @@ var CupDefaultProgressInterval = 100;
     progressInterval        The minimum time interval in milliseconds to calculate and trigger progress events.
                             jQuery File Upload option: progressInterval.
 
+    uploadMethod            A string representing the type of request method given to the jQuery File Upload.
+                            The uploads alowed are POST, PUT or PATCH. The default used is POST. jQuery File
+                            Upload option: type.
+
+    multipart               A BOOL indicating whether multipart request is to be used when uploading. YES by
+                            default. jQuery File Upload option: multipart.
+
+    widgetId                A string containing the fileupload widget element identifier in the DOM document.
+
     filenameFilter          A string regular expression suitable for use with the Javascript RegExp constructor.
                             When adding files to the queue, filenames that do not match regex are rejected.
                             Setting this property updates the filenameFilterRegex property.
@@ -215,7 +224,7 @@ var CupDefaultProgressInterval = 100;
     // jQuery File Upload options
     JSObject            fileUploadOptions;
     CPString            URL @accessors;
-    CPString            redirectURL @accessors; // ????
+    CPString            redirectURL @accessors;
     BOOL                sequential @accessors;
     int                 maxChunkSize @accessors;
     int                 maxConcurrentUploads @accessors;
