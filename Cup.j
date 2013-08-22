@@ -528,9 +528,6 @@ var CupDefaultProgressInterval = 100;
     [self setFilenameFilter:filter caseSensitive:NO];
 }
 
-/*!
-    Returns the array controller for the queue, instantiating it (and the queue) if necessary
-    and setting its content to the queue array.
 - (void)setUploadMethod:(CPString)aMethodType
 {
     if (aMethodType === CupUploadMethodPOST || aMethodType === CupUploadMethodPUT || aMethodType === CupUploadMethodPATCH)
@@ -539,6 +536,9 @@ var CupDefaultProgressInterval = 100;
     }
 }
 
+/*!
+    Returns the array controller for the queue, instantiating it (and the queue) if necessary
+    and setting its content to the queue array.
 */
 - (CPArrayController)queueController
 {
@@ -1217,10 +1217,10 @@ var CupDefaultProgressInterval = 100;
     }
 
     [[CPAlert alertWithMessageText:error
-                     defaultButton:@"OK"
-                   alternateButton:nil
-                       otherButton:nil
-         informativeTextWithFormat:@""] runModal];
+                     defaultButton:@"OK"
+                   alternateButton:nil
+                       otherButton:nil
+         informativeTextWithFormat:@""] runModal];
 }
 
 - (int)totalSizeOfQueue
