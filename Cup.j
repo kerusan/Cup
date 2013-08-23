@@ -540,9 +540,9 @@ var CupDefaultProgressInterval = 100;
 - (void)setUploadMethod:(CPString)aMethodType
 {
     if (aMethodType === CupUploadMethodPOST || aMethodType === CupUploadMethodPUT || aMethodType === CupUploadMethodPATCH)
-    {
         uploadMethod = aMethodType;
-    }
+    else
+        CPLog.warn("%s: The method type must be one of the following POST, PUT or PATCH.", [self className]);
 }
 
 /*!
