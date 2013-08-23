@@ -955,14 +955,7 @@ var CupDefaultProgressInterval = 100;
                 currentEvent = e;
                 currentData = data;
 
-                var cupFile = [self fileFromJSFile:data.files[0]],
-                    canSend = [self willSendFile:cupFile],
-                    uploadURL = [cupFile URL];
-
-                if (canSend && uploadURL)
-                    data.url = uploadURL;
-                else
-                    data.url = [self URL];
+                var canSend = [self willSendFile:[self fileFromJSFile:data.files[0]]];
 
                 [self pumpRunLoop];
                 return canSend;
@@ -1365,6 +1358,8 @@ var CupDefaultProgressInterval = 100;
 {
     [self setStatus:CupFileStatusUploading];
     [self setUploadedBytes:0];
+
+    data.url = URL || [cup URL];
 
     data.submit();
 }
