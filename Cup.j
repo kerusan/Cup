@@ -147,14 +147,12 @@ var CupDefaultProgressInterval = 100;
     progressInterval        The minimum time interval in milliseconds to calculate and trigger progress events.
                             jQuery File Upload option: progressInterval.
 
-    uploadMethod            A string representing the type of request method given to the jQuery File Upload.
-                            The uploads alowed are POST, PUT or PATCH. The default used is POST. jQuery File
-                            Upload option: type.
+    uploadMethod            The request type used for uploads. Must be one of [CupUploadMethodPOST,
+                            CupUploadMethodPUT, CupUploadMethodPATCH]. Defaults to CupUploadMethodPOST.
+                            jQuery File Upload option: type.
 
-    multipart               A BOOL indicating whether multipart request is to be used when uploading. YES by
-                            default. jQuery File Upload option: multipart.
-
-    widgetId                A string containing the fileupload widget element identifier in the DOM document.
+    multipart               A BOOL indicating whether multipart request is to be used when uploading. If YES
+                            (the default), uploads are multipart. jQuery File Upload option: multipart.
 
     filenameFilter          A string regular expression suitable for use with the Javascript RegExp constructor.
                             When adding files to the queue, filenames that do not match regex are rejected.
@@ -1271,8 +1269,7 @@ var CupDefaultProgressInterval = 100;
     This class exposes the following KVO compliant read-only properties:
 
     name            The filename of the file
-    URL             A string representing the URL to which this file will be uploaded.
-                    jQuery File Upload option: url.
+    URL             The URL to which the file will be uploaded
     size            The file's size in bytes
     type            The file's mime type
     status          One of the CupStatus constants above
